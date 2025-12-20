@@ -13,7 +13,7 @@ INFORMACIÓN DE LA IGLESIA:
 
 2. UBICACIÓN Y CONTACTO
 - Dirección: Av. Maldonado y Sincholagua (Frente a la Fábrica UMCO), Sector Chimbacalle, Quito.
-- Teléfono: +593 02 668 073
+- Teléfono: +593 00000000
 - Email: ministerios-dcn@live.it
 - Redes: Facebook e Instagram.
 
