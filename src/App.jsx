@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LinksPage from './pages/LinksPage';
 import RedirectPage from './pages/RedirectPage';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         {/* Cualquier otra ruta redirige a /links */}
         <Route path="*" element={<Navigate to="/links" replace />} />
       </Routes>
+      <Chatbot />
     </Router>
   );
 }
