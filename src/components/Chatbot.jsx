@@ -51,7 +51,8 @@ const Chatbot = () => {
             setMessages(prev => [...prev, { role: 'model', content: data.respuesta }]);
         } catch (error) {
             console.error('Error:', error);
-            setMessages(prev => [...prev, { role: 'model', content: 'Lo siento, tuve un problema al conectar. Por favor intenta de nuevo más tarde. 😔' }]);
+            // DEBUG: Mostrar error específico en producción
+            setMessages(prev => [...prev, { role: 'model', content: `Error: ${error.message || 'Problema de conexión'}` }]);
         } finally {
             setIsLoading(false);
         }

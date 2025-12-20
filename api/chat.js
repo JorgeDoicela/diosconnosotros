@@ -1,14 +1,21 @@
 import Groq from "groq-sdk";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 const SYSTEM_INSTRUCTION = `Eres el asistente de la iglesia cristiana 'Dios con Nosotros' en Quito. 
 INFO CLAVE:
 - Horarios: Domingos 8:00 AM y 10:30 AM.
 - Ubicación: Quito, sector Villaflora.
+- Servicios: Escuela dominical para niños y jóvenes.
 Responde de forma breve, amable y siempre con un tono cristiano.`;
 
 export default async function handler(req, res) {
+    console.log("Handler started"); // Debug log
+
+    if (!process.env.GROQ_API_KEY) {
+        console.error("GROQ_API_KEY is missing");
+        return res.status(500).json({ error: "Configuration Error: GROQ_API_KEY is missing" });
+    }
+
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     // Manejo básico de CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
