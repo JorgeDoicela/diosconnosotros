@@ -7,8 +7,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Ruta principal y /links renderizan la página de enlaces */}
-        <Route path="/" element={<LinksPage />} />
+        {/* Ruta principal redirige a /links */}
+        <Route path="/" element={<Navigate to="/links" replace />} />
         <Route path="/links" element={<LinksPage />} />
 
         {/* Ruta del QR dinámico */}
