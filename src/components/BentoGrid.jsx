@@ -39,7 +39,7 @@ const BentoGrid = ({ onOpenVideo }) => {
           )}
 
           {block.type === 'map' && (
-            <iframe src={block.embedUrl} className="w-full h-full grayscale hover:grayscale-0 transition-all border-0" allowFullScreen loading="lazy"></iframe>
+            <iframe src={block.embedUrl} className="w-full h-full grayscale-0 md:grayscale md:hover:grayscale-0 transition-all border-0" allowFullScreen loading="lazy"></iframe>
           )}
         </motion.div>
       ))}
