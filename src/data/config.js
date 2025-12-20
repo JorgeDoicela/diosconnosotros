@@ -30,7 +30,7 @@ export const siteConfig = {
   name: "DCN | Dios con nosotros",
   tagline: "Servicios de adoración: Domingos 8:00 a.m. & 10:30 a.m. 🙌🏼",
   location: "Quito, Ecuador 📍",
-  qrRedirectUrl: "https://diosconnosotros.vercel.app/links", // Destino modificable del QR (/go)
+  //qrRedirectUrl: "https://diosconnosotros.vercel.app/links", // Destino modificable del QR (/go)
   // Bloques visuales de arriba
   topBlocks: [
     {
