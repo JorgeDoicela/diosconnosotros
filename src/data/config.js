@@ -46,7 +46,7 @@ export const siteConfig = {
       type: "map",
       title: "Visítanos",
       embedUrl:
-        "https://maps.google.com/maps?q=-0.237207,-78.5166632&hl=es&z=15&output=embed",
+        "https://maps.google.com/maps?q=-0.237207,-78.5166632&hl=es&z=13&output=embed",
       size: "col-span-1 aspect-square",
     },
     {
