@@ -7,7 +7,7 @@ import { siteConfig } from '../data/config';
 
 const BentoGrid = ({ onOpenVideo }) => {
   return (
-    <div className="grid grid-cols-2 gap-4 w-full mb-8">
+    <div className="grid grid-cols-2 gap-2 md:gap-4 w-full mb-8">
       {siteConfig.topBlocks.map((block) => (
         <motion.div
           key={block.id}

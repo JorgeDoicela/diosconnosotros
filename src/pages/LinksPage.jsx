@@ -34,7 +34,7 @@ const LinksPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-12 px-6">
+    <div className="min-h-screen bg-[#F8FAFC] py-6 px-4 md:py-12 md:px-6">
       <motion.div
         className="max-w-3xl mx-auto"
         initial="hidden"
@@ -64,36 +64,36 @@ const LinksPage = () => {
             alt="Profile"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="w-32 h-32 rounded-full mb-6 shadow-lg border-4 border-white object-cover"
+            className="w-24 h-24 md:w-32 md:h-32 rounded-full mb-6 shadow-lg border-4 border-white object-cover"
           />
-          <h1 className="text-3xl font-bold font-merriweather text-black">{siteConfig.name}</h1>
-          <p className="text-black text-lg mt-2 font-merriweather font-normal">{siteConfig.tagline}</p>
-          <p className="text-black text-lg mt-1 font-merriweather font-normal">{siteConfig.location}</p>
+          <h1 className="text-xl md:text-3xl font-bold font-merriweather text-black">{siteConfig.name}</h1>
+          <p className="text-black text-sm md:text-lg mt-2 font-merriweather font-normal">{siteConfig.tagline}</p>
+          <p className="text-black text-sm md:text-lg mt-1 font-merriweather font-normal">{siteConfig.location}</p>
 
-          <div className="flex gap-12 mt-8 text-slate-400 items-center">
+          <div className="flex gap-6 md:gap-12 mt-8 text-slate-400 items-center">
             {/* Facebook */}
             <motion.a href="https://www.facebook.com/iglesiadcn14" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2, rotate: -5 }} whileTap={{ scale: 0.9 }}>
-              <img src={fbIcon} alt="Facebook" className="w-10 h-10 hover:opacity-80 transition-opacity" />
+              <img src={fbIcon} alt="Facebook" className="w-7 h-7 md:w-10 md:h-10 hover:opacity-80 transition-opacity" />
             </motion.a>
             {/* Instagram */}
             <motion.a href="https://www.instagram.com/iglesiadcn14?igsh=MW5kaGx5cGgzaDIweQ==" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2, rotate: 5 }} whileTap={{ scale: 0.9 }}>
-              <img src={igIcon} alt="Instagram" className="w-10 h-10 hover:opacity-80 transition-opacity" />
+              <img src={igIcon} alt="Instagram" className="w-7 h-7 md:w-10 md:h-10 hover:opacity-80 transition-opacity" />
             </motion.a>
             {/* Página Web */}
             <motion.a href="https://www.diosconosotros.com/" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2, rotate: -5 }} whileTap={{ scale: 0.9 }}>
-              <img src={webIcon} alt="Web" className="w-10 h-10 hover:opacity-80 transition-opacity" />
+              <img src={webIcon} alt="Web" className="w-7 h-7 md:w-10 md:h-10 hover:opacity-80 transition-opacity" />
             </motion.a>
             {/* Maps */}
             {/* Maps */}
             <motion.a href="https://maps.app.goo.gl/UzurAiM3bbNYxDsM8" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2, rotate: 5 }} whileTap={{ scale: 0.9 }}>
-              <img src={mapsIcon} alt="Ubicación" className="w-10 h-10 hover:opacity-80 transition-opacity" />
+              <img src={mapsIcon} alt="Ubicación" className="w-7 h-7 md:w-10 md:h-10 hover:opacity-80 transition-opacity" />
             </motion.a>
           </div>
         </motion.header>
 
         {/* PARTE ORIGINAL: Botones clásicos (Moved Up) */}
         <motion.div
-          className="space-y-4 mb-10"
+          className="space-y-3 md:space-y-4 mb-10"
           variants={{
             hidden: { opacity: 0 },
             visible: {
@@ -112,7 +112,7 @@ const LinksPage = () => {
               }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`block w-full py-6 px-8 rounded-xl text-center font-bold font-merriweather shadow-sm transition-colors text-lg ${link.isHighlight ? 'bg-[#ce1616] text-white shadow-[#ce1616]/30 shadow-lg' : 'bg-white text-slate-700 border border-slate-100'
+              className={`block w-full py-4 px-6 md:py-6 md:px-8 rounded-xl text-center font-bold font-merriweather shadow-sm transition-colors text-sm md:text-lg ${link.isHighlight ? 'bg-[#ce1616] text-white shadow-[#ce1616]/30 shadow-lg' : 'bg-white text-slate-700 border border-slate-100'
                 }`}
             >
               {link.text}

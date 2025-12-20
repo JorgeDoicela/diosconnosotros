@@ -53,7 +53,7 @@ export const siteConfig = {
       id: "b1",
       type: "carousel",
       images: [c1, c2, c3, c4],
-      size: "col-span-2 h-48",
+      size: "col-span-2 h-32 md:h-48",
     },
   ],
   // Botones de abajo
