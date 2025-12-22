@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
 const SYSTEM_INSTRUCTION = `Eres el asistente virtual de la Iglesia "Dios con Nosotros" (DcN) en Quito, Ecuador.
 Tu tono debe ser amable, breve y cristiano.
@@ -33,14 +34,60 @@ SI TE PREGUNTAN:
 
 Responde siempre de forma concisa y motivadora.`;
 
-export default async function handler(req, res) {
-    // Verificación de API Key
-    if (!process.env.GEMINI_API_KEY) {
-        return res.status(500).json({ error: "Configuration Error: GEMINI_API_KEY is missing" });
-    }
+// Función para intentar con Gemini
+async function tryGemini(mensaje, historial) {
+    if (!process.env.GEMINI_API_KEY) return null;
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({
+        model: "gemini-2.0-flash-exp",
+        systemInstruction: SYSTEM_INSTRUCTION
+    });
 
+    const chat = model.startChat({
+        history: historial || []
+    });
+
+    const result = await chat.sendMessage(mensaje);
+    const response = await result.response;
+    return response.text();
+}
+
+// Función para intentar con Groq
+async function tryGroq(mensaje, historial, modelName) {
+    if (!process.env.GROQ_API_KEY) return null;
+
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+    // Convertir historial de Gemini a formato Groq
+    const messages = [
+        { role: "system", content: SYSTEM_INSTRUCTION }
+    ];
+
+    // Agregar historial si existe
+    if (historial && historial.length > 0) {
+        for (const entry of historial) {
+            messages.push({
+                role: entry.role === "model" ? "assistant" : entry.role,
+                content: entry.parts[0].text
+            });
+        }
+    }
+
+    // Agregar mensaje actual
+    messages.push({ role: "user", content: mensaje });
+
+    const completion = await groq.chat.completions.create({
+        model: modelName,
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 1024
+    });
+
+    return completion.choices[0]?.message?.content;
+}
+
+export default async function handler(req, res) {
     // Configuración CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -53,29 +100,33 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-    // 1. AHORA RECIBIMOS 'historial' ADEMÁS DEL MENSAJE
     const { mensaje, historial } = req.body;
 
-    try {
-        const model = genAI.getGenerativeModel({
-            model: "gemini-flash-latest", // El modelo que funcionó
-            systemInstruction: SYSTEM_INSTRUCTION
-        });
+    // Sistema de fallback: Gemini -> Groq Llama 70B -> Groq Llama 8B
+    const providers = [
+        { name: "Gemini", fn: () => tryGemini(mensaje, historial) },
+        { name: "Groq Llama 70B", fn: () => tryGroq(mensaje, historial, "llama-3.1-70b-versatile") },
+        { name: "Groq Llama 8B", fn: () => tryGroq(mensaje, historial, "llama-3.1-8b-instant") }
+    ];
 
-        // 2. INICIAMOS EL CHAT CON MEMORIA
-        // Gemini espera el historial en formato: [{ role: "user", parts: [...] }, { role: "model", parts: [...] }]
-        const chat = model.startChat({
-            history: historial || [] // Si no hay historial, empieza vacío
-        });
+    for (const provider of providers) {
+        try {
+            console.log(`Intentando con ${provider.name}...`);
+            const respuesta = await provider.fn();
 
-        // 3. ENVIAMOS EL MENSAJE NUEVO
-        const result = await chat.sendMessage(mensaje);
-        const response = await result.response;
-        const text = response.text();
-
-        res.status(200).json({ respuesta: text });
-    } catch (error) {
-        console.error("Error Gemini:", error);
-        res.status(500).json({ error: "Error al conectar con el asistente" });
+            if (respuesta) {
+                console.log(`✅ Respuesta exitosa de ${provider.name}`);
+                return res.status(200).json({ respuesta, provider: provider.name });
+            }
+        } catch (error) {
+            console.error(`❌ Error con ${provider.name}:`, error.message);
+            // Continuar al siguiente provider
+            continue;
+        }
     }
+
+    // Si todos los providers fallan
+    return res.status(500).json({
+        error: "Lo siento, en este momento no puedo responder. Por favor, intenta de nuevo más tarde."
+    });
 }
