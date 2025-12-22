@@ -37,7 +37,10 @@ const Chatbot = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     mensaje: userMessage,
-                    // historia: messages - Groq simplification: single turn for now
+                    historial: messages.slice(1).map(msg => ({
+                        role: msg.role,
+                        parts: [{ text: msg.content }]
+                    }))
                 }),
             });
 

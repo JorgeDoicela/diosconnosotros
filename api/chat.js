@@ -1,10 +1,9 @@
-import Groq from "groq-sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const SYSTEM_INSTRUCTION = `Eres el asistente virtual de la Iglesia "Dios con Nosotros" (DcN) en Quito, Ecuador.
 Tu tono debe ser amable, breve y cristiano.
 
 INFORMACIÓN DE LA IGLESIA:
-
 1. IDENTIDAD Y LIDERAZGO
 - Pastores: Ramiro y Raquel Freire. (IMPORTANTE: Siempre referirse a Ramiro Freire como "Pastor", NUNCA como "Apóstol").
 - El Pastor Ramiro tiene Doctorado Honoris Causa de OMLID UNIVERSITY.
@@ -27,29 +26,22 @@ INFORMACIÓN DE LA IGLESIA:
 - Fundación: 29 de septiembre de 2007.
 - Inicios: Casa de los pastores -> Casa comunal El Pintado -> 2012 Sede actual en Chimbacalle (un "paso de fe").
 
-5. PILARES
-- Fe en la Palabra de Dios y guía del Espíritu Santo.
-- Énfasis en discipulado y liderazgo ético.
-- Testimonios de sanidad y milagros.
-
 SI TE PREGUNTAN:
 - "¿Dónde están?": Sector Chimbacalle, Av. Maldonado y Sincholagua (Frente a la Fábrica UMCO).
 - "¿Horario del domingo?": 08:00 AM a 10:00 AM.
 - "¿Quién es el pastor?": Ramiro Freire.
-- "¿Programas para mujeres?": Sí, oración de damas los martes a las 9:00 AM.
 
 Responde siempre de forma concisa y motivadora.`;
 
 export default async function handler(req, res) {
-    console.log("Handler started"); // Debug log
-
-    if (!process.env.GROQ_API_KEY) {
-        console.error("GROQ_API_KEY is missing");
-        return res.status(500).json({ error: "Configuration Error: GROQ_API_KEY is missing" });
+    // Verificación de API Key
+    if (!process.env.GEMINI_API_KEY) {
+        return res.status(500).json({ error: "Configuration Error: GEMINI_API_KEY is missing" });
     }
 
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    // Manejo básico de CORS
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+    // Configuración CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -58,36 +50,32 @@ export default async function handler(req, res) {
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
     );
 
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
-    }
-
-    const { mensaje } = req.body;
+    // 1. AHORA RECIBIMOS 'historial' ADEMÁS DEL MENSAJE
+    const { mensaje, historial } = req.body;
 
     try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: "system",
-                    content: SYSTEM_INSTRUCTION
-                },
-                {
-                    role: "user",
-                    content: mensaje,
-                },
-            ],
-            // Llama 3.1 8B es gratis, rapidísimo y muy inteligente
-            model: "llama-3.1-8b-instant",
+        const model = genAI.getGenerativeModel({
+            model: "gemini-flash-latest", // El modelo que funcionó
+            systemInstruction: SYSTEM_INSTRUCTION
         });
 
-        res.status(200).json({ respuesta: chatCompletion.choices[0].message.content });
+        // 2. INICIAMOS EL CHAT CON MEMORIA
+        // Gemini espera el historial en formato: [{ role: "user", parts: [...] }, { role: "model", parts: [...] }]
+        const chat = model.startChat({
+            history: historial || [] // Si no hay historial, empieza vacío
+        });
+
+        // 3. ENVIAMOS EL MENSAJE NUEVO
+        const result = await chat.sendMessage(mensaje);
+        const response = await result.response;
+        const text = response.text();
+
+        res.status(200).json({ respuesta: text });
     } catch (error) {
-        console.error("Error Groq:", error);
+        console.error("Error Gemini:", error);
         res.status(500).json({ error: "Error al conectar con el asistente" });
     }
 }
