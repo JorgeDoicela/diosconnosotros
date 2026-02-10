@@ -1,16 +1,67 @@
-# React + Vite
+# Dios Con Nosotros (DcN) - Plataforma Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es el repositorio oficial de la Iglesia "Dios con Nosotros" (Quito, Ecuador). La plataforma es una aplicación web moderna construida con React y Vite, diseñada para brindar información sobre la iglesia, horarios, historia y cuenta con un asistente virtual inteligente.
 
-Currently, two official plugins are available:
+## Tecnologías Principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend:** [React 19](https://react.dev/) + [Vite](https://vite.dev/)
+- **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
+- **Animaciones:** [Framer Motion](https://www.framer.com/motion/)
+- **IA:** [Google Generative AI (Gemini)](https://ai.google.dev/) & [Groq SDK](https://groq.com/)
+- **Despliegue:** [Vercel](https://vercel.com/)
 
-## React Compiler
+## Prerrequisitos
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Asegúrate de tener instalado:
+- [Node.js](https://nodejs.org/) (Versión 18 o superior recomendada)
+- [npm](https://www.npmjs.com/)
 
-## Expanding the ESLint configuration
+## Instalación y Configuración
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Sigue estos pasos para poner en marcha el proyecto localmente:
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/JorgeDoicela/diosconnosotros.git
+   cd diosconnosotros
+   ```
+
+2. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
+
+3. **Configurar variables de entorno:**
+   Crea un archivo `.env` en la raíz del proyecto y añade tus claves de API:
+   ```env
+   GEMINI_API_KEY=tu_clave_aqui
+   GROQ_API_KEY=tu_clave_aqui
+   ```
+   *Nota: El sistema utiliza Gemini como proveedor principal y Groq como respaldo (llama-3.1).*
+
+## Desarrollo
+
+Para iniciar el servidor de desarrollo:
+
+```bash
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:5173`.
+
+## Construcción para Producción
+
+Para generar los archivos listos para despliegue:
+
+```bash
+npm run build
+```
+
+## Asistente Virtual
+
+El proyecto incluye una función de API (`/api/chat.js`) que maneja la lógica del asistente virtual de la iglesia. Está configurado para responder de manera amable y breve, siguiendo la voz y misión de la Iglesia DcN.
+
+## Ubicación de la Iglesia
+
+- **Dirección:** Av. Maldonado y Sincholagua (Frente a la Fábrica UMCO), Sector Chimbacalle, Quito, Ecuador.
+- **Contacto:** ministerios-dcn@live.it
